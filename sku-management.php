@@ -1,0 +1,115 @@
+<?php
+require 'db.php';
+
+$stmt = $connection->prepare("SELECT * FROM cms_products");
+$stmt->execute();
+$result = $stmt->get_result();
+$result_count = $result->num_rows;
+
+$connection->close();
+?>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKU Management</title>
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/sku.css">
+    <link rel="stylesheet" href="./css/normalize.css">
+</head>
+
+<body>
+    <!-- header -->
+    <div class="header-bar">
+        <h2>JBC Manufacturing CMS</h2>
+
+        <div class="header-bar-right">
+            <h5>yourname@gmail.com</h5>
+            <h5>Logout</h5>
+        </div>
+    </div>
+
+    <!-- page wrapper: sidebar + main content -->
+    <div class="page-wrapper">
+        <!-- sidebar -->
+        <div class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item"><h5>Dashboard</h5></li>
+                <li li class="nav-item nav-item--active"><h5>SKU Management</h5></li>
+                <li class="nav-item"><h5>Internal Inventory</h5></li>
+                <li class="nav-item"><h5>Warehouse Inventory</h5></li>
+                <li class="nav-item"><h5>MPI Records</h5></li>
+                <li class="nav-item"><h5>Order Records</h5></li>
+            </ul>
+        </div>
+
+    <!-- main content -->
+    <div class="main-content">
+        <h1 class="color-text-primary">SKU Management</h1>
+
+        <div class="sku-action-card">
+            <h3 class="color-text-primary">Total # of SKU: 6</h3>
+            <div class="add-sku-button">
+                <h5>Add SKU</h5>
+                <img class="icon" src="./images/plus-icon.png" alt="plus icon">
+            </div>
+    </div>
+
+    <div class="sku-table-container">
+        <table class="sku-table">
+            <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Description</th>
+                <th>UOM</th>
+                <th>Pieces</th>
+                <th>Dimensions</th>
+                <th>Weight</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                <?php
+                if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+
+                    $item_sku = $row['sku'];
+                    $item_description = $row['description'];
+                    $item_uom = $row['uom'];
+                    $item_piece = $row['piece'];
+                    $item_length = $row['length'];
+                    $item_width = $row['width'];
+
+                    // Turn int heights from decimal format back to int
+                    $item_height = (string)$row['height'];
+                    if (str_ends_with($item_height, '.00')) {
+                        $item_height = substr($item_height, 0, -3);
+                    } elseif (str_ends_with($item_height, '0') && str_contains($item_height, '.')) {
+                        $item_height = substr($item_height, 0, -1);
+                    }
+
+                    $item_dimension = $item_length . "in x " . $item_width . "in x " . $item_height . 'in';
+                    $item_weight = $row['weight'];
+                ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($item_sku)?></td>
+                    <td><?php echo htmlspecialchars($item_description)?></td>
+                    <td><?php echo htmlspecialchars($item_uom)?></td>
+                    <td><?php echo htmlspecialchars($item_piece)?></td>
+                    <td><?php echo htmlspecialchars($item_dimension)?></td>
+                    <td><?php echo htmlspecialchars($item_weight)?></td>
+                    <td>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+                <?php
+                          }
+                      } else {
+                          echo "<p>No recipes found.</p>";
+                      }
+                    ?>
+    </body>
+</html>
