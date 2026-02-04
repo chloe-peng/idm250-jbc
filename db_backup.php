@@ -1,5 +1,6 @@
 <?php
 
+// BACKUP
 // Load environment variables
 $env_vars = [
     'DB_SERVER'   => $_SERVER['REDIRECT_DB_SERVER']   ?? $_SERVER['DB_SERVER']   ?? null,
