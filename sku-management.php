@@ -1,5 +1,5 @@
 <?php
-require 'db.php';
+require 'db_connect.php';
 
 $stmt = $connection->prepare("SELECT * FROM cms_products");
 $stmt->execute();

@@ -4,17 +4,17 @@
         $provided_key = null;
         $headers = getallheaders();
 
-        foreach ($headers as $header => $value) {
-            if (strtolower($header) === 'x-api-key') {
+        foreach ($headers as $name => $value) {
+            if (strtolower($name) === 'x-api-key') {
                 $provided_key = $value;
-                break;
+                // break;
             }
         }
 
         if ($provided_key !== $valid_key) {
             http_response_code(401);
-            echo json_encode(['success' => false, 'error' => 'Unauthorized: Invalid API Key']);
-            exit;
+            echo json_encode(['error' => 'Unauthorized: Invalid API Key']);
+            // exit;
         }
     }
 ?>
