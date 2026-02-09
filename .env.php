@@ -1,9 +1,9 @@
 <?php
     return [
-        'SERVER' => 'localhost',       
-        'USERNAME' => 'root',
-        'PASSWORD' => 'root',
-        'NAME' => 'idm250',
-        'X_API_KEY' => 'jbc'
+        'DB_SERVER' => 'localhost',       
+        'DB_USER' => 'root',
+        'DB_PASS' => 'root',
+        'DB_NAME' => 'idm250',
+        'X_API_KEY' => 'JBC_Verified'
     ];
 ?>
