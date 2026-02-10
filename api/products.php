@@ -12,6 +12,7 @@ $id = isset($_SERVER['PATH_INFO']) ? intval(ltrim($_server['path_info'], '/')) :
 
 
 if ($method === 'GET') :
+<<<<<<< Updated upstream
 	if ($id > 0) :
 	$product = $get_product($id);
 		if ($product) {
@@ -66,3 +67,14 @@ endif;
 		
 endif;
 ?>
+=======
+	$product_list = $get_products();
+    if ($product_list) {
+        echo json_encode(['sucess' => true, 'Product List' => $product_list]);
+    }
+    else {
+        http_response_code(404);
+        echo json_encode(['error' => 'Product not found']);
+    }
+endif;
+>>>>>>> Stashed changes
