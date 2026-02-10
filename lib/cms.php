@@ -32,6 +32,10 @@ function get_product($id) {
     if ($stmt->execute()) {
         $result = $stmt->get_result();
 	    $product = $result->fetch_assoc();
+        // assoc array of all the products
+        return $product;
+    } else {
+        return null;
     }
 }
 
@@ -59,7 +63,6 @@ function update_product($id, $data) {
         "UPDATE products SET name = ?, sku = ?, description = ?, uom = ?, piece = ?, length = ?, width = ?, height = ?, weight = ?, WHERE id = ? LIMIT 1"
     );
 
-    // s = string, i = integer
     $stmt->bind_param('ssssiiiddi', $sku, $desc, $uom, $piece, $length, $width, $height, $weight, $id);
 
     if ($stmt->execute()) {
@@ -76,6 +79,8 @@ function get_products() {
     if($stmt->execute()) {
         $result = $stmt->get_result();
 	    $product_list = $result->fetch_assoc();
+        // assoc array of all the products
+        return $product_list;
     } else {
         return false;   
     }
