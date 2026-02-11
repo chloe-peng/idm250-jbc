@@ -5,7 +5,7 @@ header('Access-Control-Allow-Origin: *');
 require_once '../db_connect.php';
 require_once '../auth.php';
 
-check_api_key($env);
+// check_api_key($env);
 
 $method = $_SERVER['REQUEST_METHOD'];
 $id = isset($_SERVER['PATH_INFO']) ? intval(ltrim($_server['path_info'], '/')) : 0;
@@ -54,7 +54,6 @@ elseif ($method === 'POST') :
 		http_repsonse_code(500);
 		echo json_encode(['error' => 'Server Error']);
 	}
-endif;
 		
 	
 elseif($method === 'PUT') :
@@ -83,6 +82,5 @@ elseif($method === 'PUT') :
 	else {
 		http_repsonse_code(500);
 		echo json_encode(['error' => 'Server Error']);
-	}	
-endif;
+	}	endif;
 ?>

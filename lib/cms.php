@@ -1,6 +1,6 @@
 <?php 
 function create_product($data){
-    global $connection:
+    global $connection;
 
     $sku = $connection -> real_escape_string($data['sku']);
     $desc = $connection -> real_escape_string($data['description']);
@@ -13,7 +13,7 @@ function create_product($data){
     $weight = floatval($data['weight']);
 
     // will insert into the database
-    $stmt = $connection->prepare("INSERT INTO cms_products (sku, description, uom, piece, length, width, height, weight) VALUES (?, ?, ?, ?)");
+    $stmt = $connection->prepare("INSERT INTO cms_products (sku, description, uom, piece, length, width, height, weight) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param('ssssiiidd', $sku, $desc, $uom, $piece, $length, $width, $height, $weight);
 
     // returns the id that is assigned to new product
@@ -31,9 +31,9 @@ function get_product($id) {
     $stmt->bind_param('i', $id);
     if ($stmt->execute()) {
         $result = $stmt->get_result();
-	    $product = $result->fetch_assoc();
+	    $product_list = $result->fetch_assoc();
         // assoc array of all the products
-        return $product;
+        return $product_list;
     } else {
         return null;
     }
