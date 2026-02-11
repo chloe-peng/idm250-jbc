@@ -49,7 +49,7 @@ $connection->close();
         <h1 class="color-text-primary">SKU Management</h1>
 
         <div class="sku-action-card">
-            <h3 class="color-text-primary">Total # of SKU: 6</h3>
+            <h3 class="color-text-primary">Total # of SKU: <?php echo htmlspecialchars($result_count)?></h3>
             <div class="add-sku-button">
                 <h5>Add SKU</h5>
                 <img class="icon" src="./images/plus-icon.png" alt="plus icon">
@@ -101,8 +101,8 @@ $connection->close();
                     <td><?php echo htmlspecialchars($item_dimension)?></td>
                     <td><?php echo htmlspecialchars($item_weight)?></td>
                     <td>
-                        <a href="product-form.php?id=<?= $product['id'] ?>">Edit</a>
-                        <a href="delete.php?id=<?= $product['id'] ?>" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                        <a class="edit-btn" href="product-form.php?id=<?= $product['id'] ?>">Edit</a>
+                        <a class="delete-btn" href="delete.php?id=<?= $product['id'] ?>" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
                     </td>
                 </tr>
                 <?php

@@ -13,7 +13,11 @@ function create_product($data){
     $weight = floatval($data['weight']);
 
     // will insert into the database
+<<<<<<< Updated upstream
     $stmt = $connection->prepare("INSERT INTO cms_products (sku, description, uom, piece, length, width, height, weight) VALUES (?, ?, ?, ?)");
+=======
+    $stmt = $connection->prepare("INSERT INTO cms_products (sku, description, uom, piece, length, width, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+>>>>>>> Stashed changes
     $stmt->bind_param('ssssiiidd', $sku, $desc, $uom, $piece, $length, $width, $height, $weight);
 
     // returns the id that is assigned to new product
@@ -78,9 +82,12 @@ function get_products() {
     $stmt = $connection->prepare("SELECT sku, description, uom, piece, length, width, height, weight FROM cms_products");
     if($stmt->execute()) {
         $result = $stmt->get_result();
-	    $product_list = $result->fetch_assoc();
+	    $products = $result->fetch_all(MYSQLI_ASSOC);
         // assoc array of all the products
-        return $product_list;
+        return [
+            'total' => count($products),
+            'products' => $products
+        ];
     } else {
         return false;   
     }
