@@ -1,6 +1,9 @@
 <?php
 require 'db_connect.php';
 require './lib/cms.php';
+require './lib/auth.php';
+
+require_login();
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $product = $id ? get_product($id) : [];
@@ -15,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,9 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- header -->
     <div class="header-bar">
         <h2>JBC Manufacturing CMS</h2>
+
         <div class="header-bar-right">
-            <h5>yourname@gmail.com</h5>
-            <h5>Logout</h5>
+            <h5><?php echo htmlspecialchars($_SESSION['user_email']); ?></h5>
+            <a href="logout.php" style="text-decoration: none; color: inherit;"><h5>Logout</h5></a>
         </div>
     </div>
 

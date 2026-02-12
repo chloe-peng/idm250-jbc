@@ -60,12 +60,10 @@ function update_product($id, $data) {
     $height = floatval($data['height']);
     $weight = floatval($data['weight']);
 
-    // betty: changed 'products' to 'cms_products', removed 'name' field, removed comma before WHERE
     $stmt = $connection->prepare(
         "UPDATE cms_products SET sku = ?, description = ?, uom = ?, piece = ?, length = ?, width = ?, height = ?, weight = ? WHERE id = ? LIMIT 1"
     );
 
-    // betty: 9 type specifiers (sssiiidd i) instead of 10, matches 8 fields + 1 id
     $stmt->bind_param('sssiiiddi', $sku, $desc, $uom, $piece, $length, $width, $height, $weight, $id);
 
     if ($stmt->execute()) {
@@ -109,5 +107,4 @@ function get_product_count() {
     
     return $row['count'];
 }
-?>
 ?>
