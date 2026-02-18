@@ -3,7 +3,7 @@ require 'db_connect.php';
 
 // Prepare query
 $stmt = $connection->prepare("
-    SELECT order_number, unit_number, item_number, description, quantity_shipped,footage_quantity, ship_date
+    SELECT order_number, unit_number, item_number, description, quantity_shipped, footage_quantity, ship_date
     FROM inventory
 ");
 
@@ -17,7 +17,7 @@ $result_count = $result->num_rows;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Management</title>
+    <title>Internal Inventory</title>
     <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/sku.css">
     <link rel="stylesheet" href="./css/normalize.css">
@@ -25,19 +25,43 @@ $result_count = $result->num_rows;
 
 <body>
 
+<!-- Header -->
 <div class="header-bar">
     <h2>JBC Manufacturing CMS</h2>
+
+    <div class="header-bar-right">
+        <h5>yourname@gmail.com</h5>
+        <h5>Logout</h5>
+    </div>
 </div>
 
+<!-- Page Wrapper -->
 <div class="page-wrapper">
 
+    <!-- Sidebar -->
+    <div class="sidebar-nav">
+        <ul class="nav-list">
+            <li class="nav-item"><h5>Dashboard</h5></li>
+            <li class="nav-item"><h5>SKU Management</h5></li>
+            <li class="nav-item nav-item--active"><h5>Internal Inventory</h5></li>
+            <li class="nav-item"><h5>Warehouse Inventory</h5></li>
+            <li class="nav-item"><h5>MPI Records</h5></li>
+            <li class="nav-item"><h5>Order Records</h5></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
     <div class="main-content">
-        <h1 class="color-text-primary">Inventory</h1>
+        <h1 class="color-text-primary">Internal Inventory</h1>
 
-        <h3>Total Inventory Records: <?php echo $result_count; ?></h3>
+        <div class="internal-inventory-action-card">
+            <h3 class="color-text-primary">
+                Total # of Internal Inventory: <?php echo $result_count; ?>
+            </h3>
+        </div>
 
-        <div class="inventory-table-container">
-            <table class="inventory-table">
+        <div class="sku-table-container">
+            <table class="sku-table">
                 <thead>
                     <tr>
                         <th>Order Number</th>
@@ -65,7 +89,7 @@ $result_count = $result->num_rows;
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4" style="text-align:center;">
+                            <td colspan="7" style="text-align:center;">
                                 No inventory records found.
                             </td>
                         </tr>
@@ -75,7 +99,6 @@ $result_count = $result->num_rows;
         </div>
 
     </div>
-
 </div>
 
 </body>
