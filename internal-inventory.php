@@ -3,7 +3,7 @@ require 'db_connect.php';
 
 // Prepare query
 $stmt = $connection->prepare("
-    SELECT order_number, unit_number, item_number, description, quantity_shipped, footage_quantity, ship_date
+    SELECT order_number, unit_number, ficha, description, quantity_shipped, footage_quantity, ship_date
     FROM inventory
 ");
 
@@ -80,7 +80,7 @@ $result_count = $result->num_rows;
                             <tr>
                                 <td><?php echo htmlspecialchars($row['order_number']); ?></td>
                                 <td><?php echo htmlspecialchars($row['unit_number']); ?></td>
-                                <td><?php echo htmlspecialchars($row['item_number']); ?></td>
+                                <td><?php echo htmlspecialchars($row['ficha']); ?></td>
                                 <td><?php echo htmlspecialchars($row['description']); ?></td>
                                 <td><?php echo htmlspecialchars($row['quantity_shipped']); ?></td>
                                 <td><?php echo htmlspecialchars($row['footage_quantity']); ?></td>
