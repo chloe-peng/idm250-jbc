@@ -43,7 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2 class="form-title">Log In</h2>
 
             <?php if ($error): ?>
-                <div class="error-message" style="background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
+                <div class="error-message" 
+                    style="background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
             <?php endif; ?>

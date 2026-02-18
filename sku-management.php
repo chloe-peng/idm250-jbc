@@ -79,12 +79,12 @@ $result_count = $result->num_rows;
                     $item_id = $row['id'];
                     $item_sku = $row['sku'];
                     $item_description = $row['description'];
-                    $item_uom = $row['uom'];
-                    $item_piece = $row['piece'];
-                    $item_length = $row['length'];
-                    $item_width = $row['width'];
+                    $item_uom = $row['uom_primary'];
+                    $item_piece = $row['piece_count'];
+                    $item_length = $row['length_inches'];
+                    $item_width = $row['width_inches'];
 
-                    $item_height = (string)$row['height'];
+                    $item_height = (string)$row['height_inches'];
                     if (str_ends_with($item_height, '.00')) {
                         $item_height = substr($item_height, 0, -3);
                     } elseif (str_ends_with($item_height, '0') && str_contains($item_height, '.')) {
@@ -92,7 +92,7 @@ $result_count = $result->num_rows;
                     }
 
                     $item_dimension = $item_length . "in x " . $item_width . "in x " . $item_height . 'in';
-                    $item_weight = $row['weight'];
+                    $item_weight = $row['weight_lbs'];
             ?>
                 <tr>
                     <td><?php echo htmlspecialchars($item_sku)?></td>

@@ -11,11 +11,16 @@ function create_product($data){
     $height = floatval($data['height']);
     $weight = floatval($data['weight']);
 
+    do {
+        $ficha = rand(100, 999);
+        $check = $connection->query("SELECT id FROM cms_products WHERE ficha = $ficha");
+    } while ($check && $check->num_rows > 0);
+
     $stmt = $connection->prepare(
-        "INSERT INTO cms_products (sku, description, uom, piece, length, width, height, weight) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO cms_products (ficha, sku, description, uom_primary, piece_count, length_inches, width_inches, height_inches, weight_lbs) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
-    $stmt->bind_param('sssiiidd', $sku, $desc, $uom, $piece, $length, $width, $height, $weight);
+    $stmt->bind_param('isssiiidd', $ficha, $sku, $desc, $uom, $piece, $length, $width, $height, $weight);
 
     if($stmt->execute()) {
         return $connection->insert_id;
@@ -28,12 +33,21 @@ function create_product($data){
 function get_product($id) {
     global $connection;
 
-    $stmt = $connection->prepare("SELECT sku, description, uom, piece, length, width, height, weight FROM cms_products WHERE id = ? LIMIT 1");
+    // Use aliases to convert database column names to form field names
+    $stmt = $connection->prepare(
+        "SELECT id, ficha, sku, description, 
+         uom_primary as uom, 
+         piece_count as piece, 
+         length_inches as length, 
+         width_inches as width, 
+         height_inches as height, 
+         weight_lbs as weight 
+         FROM cms_products WHERE id = ? LIMIT 1"
+    );
     $stmt->bind_param('i', $id);
     if ($stmt->execute()) {
         $result = $stmt->get_result();
-	    $product = $result->fetch_assoc();
-        // assoc array of all the product info
+        $product = $result->fetch_assoc();
         return $product;
     } else {
         return null;
@@ -61,8 +75,7 @@ function update_product($id, $data) {
     $weight = floatval($data['weight']);
 
     $stmt = $connection->prepare(
-        "UPDATE cms_products SET sku = ?, description = ?, uom = ?, piece = ?, length = ?, width = ?, height = ?, weight = ? WHERE id = ? LIMIT 1"
-    );
+    "UPDATE cms_products SET sku = ?, description = ?, uom_primary = ?, piece_count = ?, length_inches = ?, width_inches = ?, height_inches = ?, weight_lbs = ? WHERE id = ? LIMIT 1");
 
     $stmt->bind_param('sssiiiddi', $sku, $desc, $uom, $piece, $length, $width, $height, $weight, $id);
 
