@@ -1,0 +1,23 @@
+/* status badge styling */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-draft {
+    background-color: #FFF4E6;
+    color: #E67700;
+}
+
+.status-sent {
+    background-color: #E3F2FD;
+    color: #1976D2;
+}
+
+.status-confirmed {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+}
