@@ -33,7 +33,6 @@ function create_product($data){
 function get_product($id) {
     global $connection;
 
-    // Use aliases to convert database column names to form field names
     $stmt = $connection->prepare(
         "SELECT id, ficha, sku, description, 
          uom_primary as uom, 
