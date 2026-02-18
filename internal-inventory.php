@@ -45,7 +45,7 @@ $result_count = $result->num_rows;
             <li class="nav-item"><h5>SKU Management</h5></li>
             <li class="nav-item nav-item--active"><h5>Internal Inventory</h5></li>
             <li class="nav-item"><h5>Warehouse Inventory</h5></li>
-            <li class="nav-item"><h5>MPI Records</h5></li>
+            <li class="nav-item"><h5>MPL Records</h5></li>
             <li class="nav-item"><h5>Order Records</h5></li>
         </ul>
     </div>
