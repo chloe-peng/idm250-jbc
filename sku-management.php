@@ -1,14 +1,15 @@
 <?php
 require 'db_connect.php';
+require './lib/auth.php';
+
+require_login();
 
 $stmt = $connection->prepare("SELECT * FROM cms_products");
 $stmt->execute();
 $result = $stmt->get_result();
 $result_count = $result->num_rows;
-
-$connection->close();
 ?>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,49 +26,49 @@ $connection->close();
         <h2>JBC Manufacturing CMS</h2>
 
         <div class="header-bar-right">
-            <h5>yourname@gmail.com</h5>
-            <h5>Logout</h5>
+            <h5><?php echo htmlspecialchars($_SESSION['user_email']); ?></h5>
+            <a href="logout.php" style="text-decoration: none; color: inherit;"><h5>Logout</h5></a>
         </div>
     </div>
 
     <!-- page wrapper: sidebar + main content -->
     <div class="page-wrapper">
-        <!-- sidebar -->
-        <div class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item"><h5>Dashboard</h5></li>
-                <li li class="nav-item nav-item--active"><h5>SKU Management</h5></li>
-                <li class="nav-item"><h5>Internal Inventory</h5></li>
-                <li class="nav-item"><h5>Warehouse Inventory</h5></li>
-                <li class="nav-item"><h5>MPI Records</h5></li>
-                <li class="nav-item"><h5>Order Records</h5></li>
-            </ul>
-        </div>
+    <!-- sidebar -->
+    <div class="sidebar-nav">
+        <ul class="nav-list">
+            <li class="nav-item"><h5>Dashboard</h5></li>
+            <li class="nav-item nav-item--active"><h5>SKU Management</h5></li>
+            <li class="nav-item"><h5>Internal Inventory</h5></li>
+            <li class="nav-item"><h5>Warehouse Inventory</h5></li>
+            <li class="nav-item"><h5>MPL Records</h5></li>
+            <li class="nav-item"><h5>Order Records</h5></li>
+        </ul>
+    </div>
 
     <!-- main content -->
     <div class="main-content">
         <h1 class="color-text-primary">SKU Management</h1>
 
         <div class="sku-action-card">
-            <h3 class="color-text-primary">Total # of SKU: <?php echo htmlspecialchars($result_count)?></h3>
-            <div class="add-sku-button">
+            <h3 class="color-text-primary">Total # of SKU: <?php echo $result_count; ?></h3>
+            <a href="edit-form.php" class="add-sku-button" style="text-decoration: none; color: inherit;">
                 <h5>Add SKU</h5>
                 <img class="icon" src="./images/plus-icon.png" alt="plus icon">
-            </div>
-    </div>
+            </a>
+        </div>
 
-    <div class="sku-table-container">
+        <div class="sku-table-container">
         <table class="sku-table">
             <thead>
-            <tr>
-                <th>SKU</th>
-                <th>Description</th>
-                <th>UOM</th>
-                <th>Pieces</th>
-                <th>Dimensions</th>
-                <th>Weight</th>
-                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>SKU</th>
+                    <th>Description</th>
+                    <th>UOM</th>
+                    <th>Pieces</th>
+                    <th>Dimensions</th>
+                    <th>Weight</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
 
             <tbody>
@@ -75,15 +76,15 @@ $connection->close();
                 if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
 
+                    $item_id = $row['id'];
                     $item_sku = $row['sku'];
                     $item_description = $row['description'];
-                    $item_uom = $row['uom'];
-                    $item_piece = $row['piece'];
-                    $item_length = $row['length'];
-                    $item_width = $row['width'];
+                    $item_uom = $row['uom_primary'];
+                    $item_piece = $row['piece_count'];
+                    $item_length = $row['length_inches'];
+                    $item_width = $row['width_inches'];
 
-                    // Turn int heights from decimal format back to int
-                    $item_height = (string)$row['height'];
+                    $item_height = (string)$row['height_inches'];
                     if (str_ends_with($item_height, '.00')) {
                         $item_height = substr($item_height, 0, -3);
                     } elseif (str_ends_with($item_height, '0') && str_contains($item_height, '.')) {
@@ -91,8 +92,8 @@ $connection->close();
                     }
 
                     $item_dimension = $item_length . "in x " . $item_width . "in x " . $item_height . 'in';
-                    $item_weight = $row['weight'];
-                ?>
+                    $item_weight = $row['weight_lbs'];
+            ?>
                 <tr>
                     <td><?php echo htmlspecialchars($item_sku)?></td>
                     <td><?php echo htmlspecialchars($item_description)?></td>
@@ -101,15 +102,24 @@ $connection->close();
                     <td><?php echo htmlspecialchars($item_dimension)?></td>
                     <td><?php echo htmlspecialchars($item_weight)?></td>
                     <td>
-                        <a class="edit-btn" href="product-form.php?id=<?= $product['id'] ?>">Edit</a>
-                        <a class="delete-btn" href="delete.php?id=<?= $product['id'] ?>" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                        <a href="edit-form.php?id=<?= $item_id ?>">Edit</a>
+                        <a href="delete.php?id=<?= $item_id ?>" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
                     </td>
                 </tr>
                 <?php
-                          }
-                      } else {
-                          echo "<p>No recipes found.</p>";
-                      }
-                    ?>
-    </body>
+                    }
+                } else {
+                    echo "<tr><td colspan='7' style='text-align: center;'>No SKUs found.</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+    </div>
+</div>
+</body>
 </html>
+
+<?php
+$connection->close();
+?>
