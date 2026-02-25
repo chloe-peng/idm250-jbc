@@ -34,10 +34,10 @@ function get_mpl_items($mpl_id) {
     global $connection;
 
     $stmt = $connection->prepare(
-        "SELECT mi.*, i.sku_id, s.sku, s.description
+        "SELECT mi.*, i.ficha, i.description, s.sku
          FROM mpl_items mi
-         JOIN inventory i ON mi.unit_id = i.unit_id
-         JOIN cms_products s ON i.sku_id = s.id
+         JOIN inventory i ON mi.unit_id = i.unit_number
+         LEFT JOIN cms_products s ON i.ficha = s.ficha
          WHERE mi.mpl_id = ?"
     );
     $stmt->bind_param('i', $mpl_id);
@@ -55,7 +55,7 @@ function get_mpl_items($mpl_id) {
 function get_mpl_item_count($mpl_id) {
     global $connection;
     
-    $stmt = $connection->prepare("SELECT COUNT(*) as count FROM mpl_items WHERE mpl_id = ?");
+    $stmt = $connection->prepare("SELECT COUNT(*) as count FROM mpl_items WHERE id = ?");
     $stmt->bind_param('i', $mpl_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -79,12 +79,12 @@ function create_mpl($data, $unit_ids) {
     global $connection;
 
     $stmt = $connection->prepare(
-        "INSERT INTO mpls (reference_number, trailer_number, expected_arrival, status)
+        "INSERT INTO mpls (reference_num, trailer_number, expected_arrival, status)
          VALUES (?, ?, ?, 'draft')"
     );
     
     $stmt->bind_param('sss', 
-        $data['reference_number'], 
+        $data['reference_num'], 
         $data['trailer_number'], 
         $data['expected_arrival']
     );
@@ -96,7 +96,7 @@ function create_mpl($data, $unit_ids) {
     $mpl_id = $connection->insert_id;
     
     if (!empty($unit_ids)) {
-        $stmt = $connection->prepare("INSERT INTO mpl_items (mpl_id, unit_id) VALUES (?, ?)");
+        $stmt = $connection->prepare("INSERT INTO mpl_items (id, unit_id) VALUES (?, ?)");
         
         foreach ($unit_ids as $unit_id) {
             $stmt->bind_param('is', $mpl_id, $unit_id);
@@ -122,12 +122,12 @@ function update_mpl($id, $data, $unit_ids) {
     
     $stmt = $connection->prepare(
         "UPDATE mpls 
-         SET reference_number = ?, trailer_number = ?, expected_arrival = ? 
+         SET reference_num = ?, trailer_number = ?, expected_arrival = ? 
          WHERE id = ? LIMIT 1"
     );
     
     $stmt->bind_param('sssi', 
-        $data['reference_number'], 
+        $data['reference_num'], 
         $data['trailer_number'], 
         $data['expected_arrival'],
         $id
@@ -137,7 +137,7 @@ function update_mpl($id, $data, $unit_ids) {
         return false;
     }
     
-    $stmt = $connection->prepare("DELETE FROM mpl_items WHERE mpl_id = ?");
+    $stmt = $connection->prepare("DELETE FROM mpl_items WHERE id = ?");
     $stmt->bind_param('i', $id);
     $stmt->execute();
     
@@ -166,7 +166,7 @@ function delete_mpl($id) {
         return false;
     }
     
-    $stmt = $connection->prepare("DELETE FROM mpl_items WHERE mpl_id = ?");
+    $stmt = $connection->prepare("DELETE FROM mpl_items WHERE id = ?");
     $stmt->bind_param('i', $id);
     $stmt->execute();
     

@@ -5,7 +5,7 @@ header('Access-Control-Allow-Origin: *');
 require_once '../db_connect.php';
 require_once '../auth.php';
 
-// check_api_key($env);
+check_api_key($env);
 
 $method = $_SERVER['REQUEST_METHOD'];
 $id = isset($_SERVER['PATH_INFO']) ? intval(ltrim($_server['path_info'], '/')) : 0;
@@ -13,8 +13,8 @@ $id = isset($_SERVER['PATH_INFO']) ? intval(ltrim($_server['path_info'], '/')) :
 
 if ($method === 'GET') :
 	if ($id > 0) :
-	$product = $get_product($id);
-		if ($product) {
+	$inventory = $get_inventory();
+		if ($inventory) {
 			echo json_encode(['sucess' => true, 'product' => $product]);
 		}
 		else {
@@ -23,12 +23,9 @@ if ($method === 'GET') :
 		}
 endif;
 	
-// add new information (DONE)
-// id if we need these last two for apis
+
 elseif ($method === 'POST') :
-	// this is data sent to us
 	$data = json_decode(file_get_contents('php://input'), true);
-	// if nothing was sent, will use form data?
 	if (!isset($data)) {
 		$data = $_POST;
 	}
@@ -54,12 +51,10 @@ elseif ($method === 'POST') :
 		http_repsonse_code(500);
 		echo json_encode(['error' => 'Server Error']);
 	}
-		
-	
+endif;
+
 elseif($method === 'PUT') :
-	// this is data sent to us
 	$data = json_decode(file_get_contents('php://input'), true);
-	// if nothing was sent, will use form data?
 	if (!isset($data)) {
 		$data = $_POST;
 	}
@@ -82,5 +77,6 @@ elseif($method === 'PUT') :
 	else {
 		http_repsonse_code(500);
 		echo json_encode(['error' => 'Server Error']);
-	}	endif;
+	}	
+endif;
 ?>
