@@ -3,7 +3,7 @@ require 'db_connect.php';
 require './lib/inventory.php';
 require './lib/auth.php';
 
-$warehouse_inventory = get_inventory('internal');
+$warehouse_inventory = get_inventory('warehouse');
 $inventory_amount = $warehouse_inventory['total'];
 
 ?>
@@ -46,7 +46,7 @@ $inventory_amount = $warehouse_inventory['total'];
 
         <!-- main content -->
         <div class="main-content">
-            <h1 class="color-text-primary">Internal Inventory</h1>
+            <h1 class="color-text-primary">Warehouse Inventory</h1>
 
             <div class="internal-inventory-action-card">
                 <h3 class="color-text-primary">
