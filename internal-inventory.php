@@ -20,57 +20,68 @@ $inventory_amount = $warehouse_inventory['total'];
 </head>
 
 <body>
-    <!-- header -->
-    <div class="header-bar">
-        <h2>JBC Manufacturing CMS</h2>
 
-        <div class="header-bar-right">
-            <h5>yourname@gmail.com</h5>
-            <h5>Logout</h5>
-        </div>
-    </div>
+<!-- header -->
+<div class="header-bar">
+    <h2>JBC Manufacturing CMS</h2>
 
-    <!-- page wrapper: sidebar + main content -->
-    <div class="page-wrapper">
-        <!-- sidebar -->
-        <div class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item"><h5>Dashboard</h5></li>
-                <li class="nav-item"><h5>SKU Management</h5></li>
-                <li class="nav-item nav-item--active"><h5>Internal Inventory</h5></li>
-                <li class="nav-item"><h5>Warehouse Inventory</h5></li>
-                <li class="nav-item"><h5>MPI Records</h5></li>
-                <li class="nav-item"><h5>Order Records</h5></li>
-            </ul>
-        </div>
+    <div class="header-bar-right">
+        <h5><?php echo htmlspecialchars($_SESSION['user_email']); ?></h5>
+        <a href="logout.php" style="text-decoration: none; color: inherit;"><h5>Logout</h5></a>
+    </div>
+</div>
 
-        <!-- main content -->
-        <div class="main-content">
-            <h1 class="color-text-primary">Internal Inventory</h1>
+<!-- Page Wrapper -->
+<div class="page-wrapper">
 
-            <div class="internal-inventory-action-card">
-                <h3 class="color-text-primary">
-                    Total # of Warehouse Inventory: <?php echo htmlspecialchars($inventory_amount) ?>
-                </h3>
-            </div>
+    <!-- Sidebar -->
+        <div class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a style="text-decoration: none; color: inherit;" href="sku-management.php"><h5>SKU Management</h5></a>
+                </li>
+                <li class="nav-item nav-item--active">
+                    <a style="text-decoration: none; color: inherit;" href="internal-inventory.php"><h5>Internal Inventory</h5></a>
+                </li>
+                <li class="nav-item">
+                    <a style="text-decoration: none; color: inherit;" href="warehouse-inventory.php"><h5>Warehouse Inventory</h5></a>
+                </li>
+                <li class="nav-item">
+                    <a style="text-decoration: none; color: inherit;" href="mpl-records.php"><h5>MPL Records</h5></a>
+                </li>
+                <li class="nav-item">
+                    <a style="text-decoration: none; color: inherit;" href="order-records.php"><h5>Order Records</h5></a>
+                </li>
+            </ul>
+        </div>
 
-            <div class="sku-table-container">
-                <table class="sku-table">
-                    <thead>
-                        <tr>
-                            <th>Order Number</th>
-                            <th>Unit Number</th>
-                            <th>Ficha</th>
-                            <th>SKU</th>
-                            <th>UOM</th>
-                            <th>Description</th>
-                            <th>Quantity Shipped</th>
-                            <th>Footage Quantity</th>
-                            <th>Ship Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($warehouse_inventory['inventory'] as $unit): ?>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="color-text-primary">Internal Inventory</h1>
+
+        <div class="internal-inventory-action-card">
+            <h3 class="color-text-primary">
+                Total # of Internal Inventory: <?php echo $result_count; ?>
+            </h3>
+        </div>
+
+        <div class="sku-table-container">
+            <table class="sku-table">
+                <thead>
+                    <tr>
+                        <th>Order Number</th>
+                        <th>Unit Number</th>
+                        <th>Ficha</th>
+                        <th>Description</th>
+                        <th>Quantity Shipped</th>
+                        <th>Footage Quantity</th>
+                        <th>Ship Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php if ($result_count > 0): ?>
+                        <?php while ($row = $result->fetch_assoc()): ?>
                             <tr>
                                 <td><?= htmlspecialchars($unit['order_number']) ?></td>
                                 <td><?= htmlspecialchars($unit['unit_number']) ?></td>
@@ -82,11 +93,19 @@ $inventory_amount = $warehouse_inventory['total'];
                                 <td><?= htmlspecialchars($unit['footage_quantity']) ?></td>
                                 <td><?= htmlspecialchars($unit['ship_date']) ?></td>
                             </tr>
-                            <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7" style="text-align:center;">
+                                No inventory records found.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
 </body>
 </html>

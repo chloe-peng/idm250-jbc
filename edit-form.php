@@ -45,12 +45,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- sidebar -->
         <div class="sidebar-nav">
             <ul class="nav-list">
-                <li class="nav-item"><h5>Dashboard</h5></li>
-                <li class="nav-item nav-item--active"><h5>SKU Management</h5></li>
-                <li class="nav-item"><h5>Internal Inventory</h5></li>
-                <li class="nav-item"><h5>Warehouse Inventory</h5></li>
-                <li class="nav-item"><h5>MPI Records</h5></li>
-                <li class="nav-item"><h5>Order Records</h5></li>
+                <li class="nav-item nav-item--active">
+                    <a style="text-decoration: none; color: inherit;" href="sku-management.php"><h5>SKU Management</h5></a>
+                </li>
+                <li class="nav-item">
+                    <a style="text-decoration: none; color: inherit;" href="internal-inventory.php"><h5>Internal Inventory</h5></a>
+                </li>
+                <li class="nav-item">
+                    <a style="text-decoration: none; color: inherit;" href="warehouse-inventory.php"><h5>Warehouse Inventory</h5></a>
+                </li>
+                <li class="nav-item">
+                    <a style="text-decoration: none; color: inherit;" href="mpl-records.php"><h5>MPL Records</h5></a>
+                </li>
+                <li class="nav-item">
+                    <a style="text-decoration: none; color: inherit;" href="order-records.php"><h5>Order Records</h5></a>
+                </li>
             </ul>
         </div>
 
