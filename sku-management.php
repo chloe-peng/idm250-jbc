@@ -36,7 +36,7 @@ $result_count = $result->num_rows;
     <!-- sidebar -->
     <div class="sidebar-nav">
         <ul class="nav-list">
-            <li class="nav-item"><h5>Dashboard</h5></li>
+            <!-- <li class="nav-item"><h5>Dashboard</h5></li> -->
             <li class="nav-item nav-item--active"><h5>SKU Management</h5></li>
             <li class="nav-item"><h5>Internal Inventory</h5></li>
             <li class="nav-item"><h5>Warehouse Inventory</h5></li>

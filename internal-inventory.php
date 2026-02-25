@@ -1,5 +1,8 @@
 <?php
 require 'db_connect.php';
+require './lib/auth.php';
+
+require_login();
 
 // Prepare query
 $stmt = $connection->prepare("
@@ -25,13 +28,13 @@ $result_count = $result->num_rows;
 
 <body>
 
-<!-- Header -->
+<!-- header -->
 <div class="header-bar">
     <h2>JBC Manufacturing CMS</h2>
 
     <div class="header-bar-right">
-        <h5>yourname@gmail.com</h5>
-        <h5>Logout</h5>
+        <h5><?php echo htmlspecialchars($_SESSION['user_email']); ?></h5>
+        <a href="logout.php" style="text-decoration: none; color: inherit;"><h5>Logout</h5></a>
     </div>
 </div>
 
@@ -41,7 +44,7 @@ $result_count = $result->num_rows;
     <!-- Sidebar -->
     <div class="sidebar-nav">
         <ul class="nav-list">
-            <li class="nav-item"><h5>Dashboard</h5></li>
+            <!-- <li class="nav-item"><h5>Dashboard</h5></li> -->
             <li class="nav-item"><h5>SKU Management</h5></li>
             <li class="nav-item nav-item--active"><h5>Internal Inventory</h5></li>
             <li class="nav-item"><h5>Warehouse Inventory</h5></li>
