@@ -1,22 +1,29 @@
 <?php
 require 'db_connect.php';
-require './lib/inventory.php';
 require './lib/auth.php';
 
-$warehouse_inventory = get_inventory('internal');
-$inventory_amount = $warehouse_inventory['total'];
+require_login();
 
+// Prepare query
+$stmt = $connection->prepare("
+    SELECT order_number, unit_number, ficha, description, quantity_shipped, footage_quantity, ship_date
+    FROM inventory
+");
+
+$stmt->execute();
+$result = $stmt->get_result();
+$result_count = $result->num_rows;
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Inventory Template</title>
-    <link rel="stylesheet" href="./css/global.css">
-    <link rel="stylesheet" href="./css/sku.css">
-    <link rel="stylesheet" href="./css/normalize.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Inventory</title>
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/sku.css">
+    <link rel="stylesheet" href="./css/normalize.css">
 </head>
 
 <body>
@@ -83,15 +90,13 @@ $inventory_amount = $warehouse_inventory['total'];
                     <?php if ($result_count > 0): ?>
                         <?php while ($row = $result->fetch_assoc()): ?>
                             <tr>
-                                <td><?= htmlspecialchars($unit['order_number']) ?></td>
-                                <td><?= htmlspecialchars($unit['unit_number']) ?></td>
-                                <td><?= htmlspecialchars($unit['ficha']) ?></td>
-                                <td><?= htmlspecialchars($unit['sku']) ?></td>
-                                <td><?= htmlspecialchars($unit['uom_primary']) ?></td>
-                                <td><?= htmlspecialchars($unit['description']) ?></td>
-                                <td><?= htmlspecialchars($unit['quantity_shipped']) ?></td>
-                                <td><?= htmlspecialchars($unit['footage_quantity']) ?></td>
-                                <td><?= htmlspecialchars($unit['ship_date']) ?></td>
+                                <td><?php echo htmlspecialchars($row['order_number']); ?></td>
+                                <td><?php echo htmlspecialchars($row['unit_number']); ?></td>
+                                <td><?php echo htmlspecialchars($row['ficha']); ?></td>
+                                <td><?php echo htmlspecialchars($row['description']); ?></td>
+                                <td><?php echo htmlspecialchars($row['quantity_shipped']); ?></td>
+                                <td><?php echo htmlspecialchars($row['footage_quantity']); ?></td>
+                                <td><?php echo htmlspecialchars($row['ship_date']); ?></td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
@@ -104,8 +109,12 @@ $inventory_amount = $warehouse_inventory['total'];
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
 </body>
 </html>
+
+<?php
+$stmt->close();
+$connection->close();
+?>
