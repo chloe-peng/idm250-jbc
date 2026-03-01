@@ -18,7 +18,7 @@ if ($id && $mpl && $mpl['status'] !== 'draft') {
 // handles form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
-        'reference_number' => $_POST['reference_number'],
+        'reference_num' => $_POST['reference_number'],
         'trailer_number' => $_POST['trailer_number'],
         'expected_arrival' => $_POST['expected_arrival']
     ];
@@ -246,7 +246,7 @@ if ($id) {
         <div class="main-content" style="position: relative;">
             <a href="mpl-records.php" class="back-link">Back to List</a>
             
-            <h1 class="color-text-primary" style="margin-bottom: 30px;">MPL</h1>
+            <h1 class="color-text-primary" style="margin-bottom: 30px;">Create MPL</h1>
 
             <?php if (isset($error)): ?>
                 <div style="background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
@@ -261,13 +261,13 @@ if ($id) {
 
                 <div class="mpl-form-header">
                     <div class="form-field">
-                        <label for="reference_number">Reference Number</label>
+                        <label for="reference_num">Reference Number</label>
                         <input 
                             type="text" 
                             id="reference_number" 
                             name="reference_number" 
                             placeholder="Fill reference number"
-                            value="<?= htmlspecialchars($mpl['reference_number'] ?? '') ?>"
+                            value="<?= htmlspecialchars($mpl['reference_num'] ?? '') ?>"
                             required
                         >
                     </div>

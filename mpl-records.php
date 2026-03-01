@@ -85,7 +85,7 @@ $mpl_count = get_mpl_count();
                         if ($mpls && count($mpls) > 0) {
                             foreach ($mpls as $mpl) {
                                 $mpl_id = $mpl['id'];
-                                $reference = $mpl['reference_number'];
+                                $reference = $mpl['reference_num'];
                                 $trailer = $mpl['trailer_number'];
                                 $arrival = date('m-d-y', strtotime($mpl['expected_arrival']));
                                 $status = $mpl['status'];
@@ -104,14 +104,14 @@ $mpl_count = get_mpl_count();
                             <td>
                                 <?php if ($status === 'draft'): ?>
                                     <a href="mpl-form.php?id=<?= $mpl_id ?>">Edit</a>
-                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
                                     <a href="delete-mpl.php?id=<?= $mpl_id ?>" onclick="return confirm('Are you sure you want to delete this MPL?');">Delete</a>
                                 <?php elseif ($status === 'sent'): ?>
-                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
                                     <a href="mpl-confirm.php?id=<?= $mpl_id ?>&action=confirm">Confirm</a>
                                 <?php else: 
                                     // confirmed ?>
-                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
                                 <?php endif; ?>
                             </td>
                         </tr>
