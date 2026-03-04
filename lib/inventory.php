@@ -33,19 +33,4 @@ function get_inventory($location = null) {
     }
 }
 
-// function get_unit($unit_id) {
-//     global $connection;
-
-//     $sql = "SELECT i.* FROM inventory i
-//         WHERE i.unit_id = ?";
-// }
-
-// function change_unit_location($units) {
-//     global $connection;
-
-//     foreach($units as $unit_id) {
-//         get_unit($unit_id);
-//     }
-// }
-
 ?>
