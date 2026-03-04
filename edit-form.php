@@ -86,7 +86,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-control">
                 <label for="uom">UOM *</label>
-                <input type="text" id="uom" name="uom" value="<?= htmlspecialchars($product['uom'] ?? '') ?>" required>
+                <div style="display: flex; gap: 12px; margin-top: 4px;">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" id="uom_pallet" name="uom" value="PALLET" 
+                            <?= (($product['uom'] ?? '') === 'PALLET') ? 'checked' : '' ?> required>
+                        PALLET
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" id="uom_bundle" name="uom" value="BUNDLE" 
+                            <?= (($product['uom'] ?? '') === 'BUNDLE') ? 'checked' : '' ?> required>
+                        BUNDLE
+                    </label>
+                </div>
             </div>
 
             <div class="form-control">
