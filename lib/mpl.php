@@ -34,11 +34,11 @@ function get_mpl_items($mpl_id) {
     global $connection;
 
     $stmt = $connection->prepare(
-        "SELECT mi.*, i.ficha, i.description, s.sku
-         FROM mpl_items mi
-         JOIN inventory i ON mi.unit_id = i.unit_number
-         LEFT JOIN cms_products s ON i.ficha = s.ficha
-         WHERE mi.mpl_id = ?"
+        "SELECT mi.*, i.ficha, s.*
+        FROM mpl_items mi
+        JOIN inventory i ON mi.unit_id = i.unit_number
+        LEFT JOIN cms_products s ON i.ficha = s.ficha
+        WHERE mi.mpl_id = ?"
     );
     $stmt->bind_param('i', $mpl_id);
     
@@ -84,7 +84,7 @@ function create_mpl($data, $unit_ids) {
     );
     
     $stmt->bind_param('sss', 
-        $data['reference_num'], 
+        $data['reference_number'], 
         $data['trailer_number'], 
         $data['expected_arrival']
     );
@@ -99,7 +99,7 @@ function create_mpl($data, $unit_ids) {
         $stmt = $connection->prepare("INSERT INTO mpl_items (mpl_id, unit_id) VALUES (?, ?)");
         
         foreach ($unit_ids as $unit_id) {
-            $stmt->bind_param('is', $mpl_id, $unit_id);
+            $stmt->bind_param('ii', $mpl_id, $unit_id);
             $stmt->execute();
         }
     }
@@ -145,7 +145,7 @@ function update_mpl($id, $data, $unit_ids) {
         $stmt = $connection->prepare("INSERT INTO mpl_items (mpl_id, unit_id) VALUES (?, ?)");
         
         foreach ($unit_ids as $unit_id) {
-            $stmt->bind_param('is', $mpl_id, $unit_id);
+            $stmt->bind_param('ii', $mpl_id, $unit_id);
             $stmt->execute();
         }
     }
@@ -177,7 +177,7 @@ function delete_mpl($id) {
 }
 
 // this changes the status (draft, sent, confirmed)
-function update_mpl_status($id, $status) {
+function update_mpl_status($mpl_id, $status) {
     global $connection;
     
     // validates status
@@ -187,8 +187,101 @@ function update_mpl_status($id, $status) {
     }
     
     $stmt = $connection->prepare("UPDATE mpls SET status = ? WHERE id = ?");
-    $stmt->bind_param('si', $status, $id);
+    $stmt->bind_param('si', $status, $mpl_id);
     
     return $stmt->execute();
 }
+
+function api_request($url, $method, $data, $api_key) {
+    $options = [
+        'http' => [
+            'method'  => $method,
+            'header'  => "Content-Type: application/json\r\n" .
+                         "x-api-key: " . $api_key . "\r\n",
+            'content' => json_encode($data),
+            'ignore_errors' => true
+        ]
+    ];
+
+    $context  = stream_context_create($options);
+    $response = @file_get_contents($url, false, $context);
+    $result   = json_decode($response, true);
+
+    return $result;
+}
+
+function send_mpl_to_wms($mpl_id) {
+    global $connection;
+    global $env;
+
+    $mpl = get_mpl($mpl_id);
+    if (!$mpl) {
+        return ['error' => 'MPL not found'];
+    }
+
+    $raw_items = get_mpl_items($mpl_id);
+    if (empty($raw_items)) {
+        return ['error' => 'No units found for this MPL'];
+    }
+
+    $formatted_items = [];
+    foreach ($raw_items as $item) {
+        $formatted_items[] = [
+            'unit_id' => $item['unit_id'],
+            'sku' => $item['sku'],
+            'sku_details' => [
+                'sku' => $item['sku'],
+                'description' => $item['description'],
+                'uom_primary' => $item['uom_primary'],
+                'piece_count' => (int)$item['piece_count'],
+                'length_inches' => (int)$item['length_inches'],
+                'width_inches' => (int)$item['width_inches'],
+                'height_inches' => (float)$item['height_inches'],
+                'weight_lbs' => (float)$item['weight_lbs']
+            ]
+        ];
+    }
+
+    $payload = [
+        'reference_number' => $mpl['reference_num'],
+        'trailer_number' => $mpl['trailer_number'],
+        'expected_arrival' => $mpl['expected_arrival'],
+        'items' => $formatted_items
+    ];
+
+    $wms_api_url = 'https://digmstudents.westphal.drexel.edu/~ks4264/idm250-cms-project/api/mpls.php';
+    $api_key = $env['X-API-KEY'];
+    $response = api_request($wms_api_url, 'POST', $payload, $api_key);
+
+    if (!empty($response['success'])) {
+        update_mpl_status($mpl_id, 'sent');
+        return [
+            'success' => true,
+            'units_count' => $response['units_count'] ?? count($formatted_items)
+        ];
+    } else {
+        return [ 'success' => false,
+        'error' => $response['error'] ?? 'Unknown error'
+        ];
+    }
+    
+    return $response;
+}
+
+function update_units_location($mpl_id, $new_location) {
+    global $connection;
+
+   $stmt = $connection->prepare("
+        UPDATE inventory i
+        JOIN mpl_items mi ON mi.unit_id = i.unit_number
+        SET i.location = ?
+        WHERE mi.mpl_id = ?
+    ");
+
+    $stmt->bind_param("si", $new_location, $mpl_id);
+    
+    $stmt->execute();
+    return $stmt->affected_rows;
+}
+
 ?>

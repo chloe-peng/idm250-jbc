@@ -1,10 +1,10 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
+if (!defined('API_REQUEST') && session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 function check_api_key(array $env) {
-    $valid_key = $env['X_API_KEY'];
+    $valid_key = $env['X-API-KEY'];
     $provided_key = null;
     $headers = getallheaders();
 

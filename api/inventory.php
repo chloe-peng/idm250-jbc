@@ -21,62 +21,6 @@ if ($method === 'GET') :
             http_response_code(404);
             echo json_encode(['error' => 'Product not found']);
 		}
-endif;
-	
-
-elseif ($method === 'POST') :
-	$data = json_decode(file_get_contents('php://input'), true);
-	if (!isset($data)) {
-		$data = $_POST;
-	}
-
-	$data_keys = ['sku', 'description', 'uom', 'piece', 'length', 'width', 'height', 'weight'];
-	foreach ($data_keys as $key) {
-		if (!isset($data[$key])) {
-			http_response_code(400);
-			echo json_encode([
-				'error' => 'Bad Request',
-				'details' => "Missing required field: $key"
-			]);
-			exit;
-		}
-	}
-	$new_id = create_product($data);
-
-	if($new_id) {
-		http_response_code(200);
-		echo json_encode(['success' => true, 'id' => $new_id]);
-	}
-	else {
-		http_repsonse_code(500);
-		echo json_encode(['error' => 'Server Error']);
-	}
-endif;
-
-elseif($method === 'PUT') :
-	$data = json_decode(file_get_contents('php://input'), true);
-	if (!isset($data)) {
-		$data = $_POST;
-	}
-	
-	$data_keys = ['sku', 'description', 'uom', 'piece', 'length', 'width', 'height', 'weight'];
-	foreach ($data_keys as $key) {
-		if (!isset($data[$key])) {
-			http_response_code(400);
-			echo json_encode([
-				'error' => 'Bad Request',
-				'details' => "Missing required field: $key"
-			]);
-			exit;
-		}
-	}
-	
-	if(update_product($id, $data)) {
-		echo json_encode(['success' => true]);
-	}
-	else {
-		http_repsonse_code(500);
-		echo json_encode(['error' => 'Server Error']);
-	}	
+	endif;	
 endif;
 ?>

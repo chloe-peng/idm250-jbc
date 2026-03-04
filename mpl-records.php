@@ -8,7 +8,32 @@ require_login();
 // get all MPLs
 $mpls = get_all_mpls();
 $mpl_count = get_mpl_count();
+
+if (isset($_GET['send']) && isset($_GET['id'])) {
+    $mpl_id = (int)$_GET['id'];
+    // $units = get_mpl_items($mpl_id);
+
+    $response = send_mpl_to_wms($mpl_id);
+
+    if (!empty($response['success'])) {
+        $_SESSION['success'] = "MPL $mpl_id sent to WMS successfully!";
+
+        $updated = update_units_location($mpl_id, 'warehouse');
+            if ($updated > 0) {
+                echo 'Units have successfully been updated';
+                header("Location: mpl-records.php");
+                exit();
+            }
+    } else {
+        $_SESSION['error'] = "Failed to send MPL $mpl_id: " . ($response['error'] ?? 'Unknown error');
+    }
+
+    header('Location: mpl-records.php');
+    exit;
+}
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,6 +92,16 @@ $mpl_count = get_mpl_count();
                 </a>
             </div>
 
+        <?php if (!empty($_SESSION['success'])): ?>
+            <div class="alert success"><?= $_SESSION['success']; ?></div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
+        <?php if (!empty($_SESSION['error'])): ?>
+            <div class="alert error"><?= $_SESSION['error']; ?></div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
             <div class="sku-table-container">
                 <table class="sku-table">
                     <thead>
@@ -106,6 +141,8 @@ $mpl_count = get_mpl_count();
                                     <a href="mpl-form.php?id=<?= $mpl_id ?>">Edit</a>
                                     <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
                                     <a href="delete-mpl.php?id=<?= $mpl_id ?>" onclick="return confirm('Are you sure you want to delete this MPL?');">Delete</a>
+                                    <a href="mpl-records.php?id=<?= $mpl_id ?>&send=1" class="btn-send">Send to WMS</a>
+
                                 <?php elseif ($status === 'sent'): ?>
                                     <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
                                     <a href="mpl-confirm.php?id=<?= $mpl_id ?>&action=confirm">Confirm</a>

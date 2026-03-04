@@ -13,6 +13,14 @@ if ($id && $mpl && $mpl['status'] !== 'draft') {
     $_SESSION['error'] = 'Only draft MPLs can be edited.';
     header('Location: mpl-records.php');
     exit;
+} 
+
+if ($result) {
+    $_SESSION['success'] = $id ? 'MPL updated successfully.' : 'MPL created successfully.';
+    header('Location: mpl-records.php');
+    exit;
+} else {
+    $error = $id ? 'Failed to update MPL.' : 'Failed to create MPL.';
 }
 
 // handles form submission
@@ -31,12 +39,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = create_mpl($data, $unit_ids);
     }
     
-    if ($result) {
-        $_SESSION['success'] = $id ? 'MPL updated successfully.' : 'MPL created successfully.';
-        header('Location: mpl-records.php');
-        exit;
+    if (empty($data['reference_number']) || empty($data['unit_ids'])) {
+        $error = "Reference number and at least one unit are required.";
     } else {
-        $error = $id ? 'Failed to update MPL.' : 'Failed to create MPL.';
+        if ($id) {
+            $result = update_mpl($id, $data, $data['unit_ids']);
+        }
+        else { 
+            $encoded_payload = json_encode($data);
+            $api_url = 'http://localhost:8888/api/mpl.php';
+            global $env;
+            $api_key = $env['X-API-KEY'];
+
+            $result = api_request($api_url, 'POST', $data, $api_key);
+        }
+        
+        if (!empty($result['success'])) {
+            $_SESSION['success'] = $id ? 'MPL updated successfully.' : 'MPL created successfully.';
+            header('Location: mpl-records.php');
+            exit;
+        } else {
+            $error = $result['error'] ?? 'Error unable to create the MPL';
+        }
     }
 }
 
@@ -68,145 +92,7 @@ if ($id) {
     <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/sku.css">
     <link rel="stylesheet" href="./css/normalize.css">
-<style>
-    .mpl-form-header {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        margin-bottom: 40px;
-    }
-    
-    .form-field {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .form-field label {
-        font-weight: 600;
-        margin-bottom: 16px;
-        color: #323232;
-    }
-    
-    .form-field input {
-        height: 66px;
-        padding: 22px;
-        border: 1px solid #EBEBEB;
-        border-radius: 8px;
-        font-size: 16px;
-    }
-    
-    .form-field input::placeholder {
-        color: #999;
-    }
-    
-    .units-section {
-        margin-top: 40px;
-        border: 
-    }
-    
-    .units-section h4 {
-        margin-bottom: 20px;
-        color: #2C77A0;
-    }
-    
-    .units-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    .units-table thead {
-        background-color: #F5FAFF;
-    }
-    
-    .units-table th {
-        padding: 16px;
-        text-align: left;
-        font-weight: 600;
-        color: #323232;
-        border-bottom: 1px solid #EBEBEB;
-    }
-    
-    .units-table td {
-        padding: 16px;
-        border-bottom: 1px solid #EBEBEB;
-    }
-    
-    .units-table tbody tr:hover {
-        background-color: #FAFAFA;
-    }
-    
-    .checkbox-cell {
-        width: 60px;
-    }
-    
-    .checkbox-cell input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-    }
-    
-    .select-all-row {
-        background-color: #F5FAFF;
-        font-weight: 600;
-    }
-    
-    .form-buttons {
-        display: flex;
-        gap: 12px;
-        margin-top: 12px;
-        padding-top: 20px;
-    }
-    
-    .btn {
-        padding: 12px 24px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 500;
-        cursor: pointer;
-        border: none;
-        text-decoration: none;
-        display: inline-block;
-    }
-    
-    .btn-primary {
-        background-color: #CFEFFF;
-        color: #323232;
-        border: 1px solid #EBEBEB;
-    }
-    
-    .btn-primary:hover {
-        background-color: #b8e5ff;
-    }
-    
-    .btn-cancel {
-        background-color: #FF6B6B;
-        color: #ffffff;
-    }
-    
-    .btn-cancel:hover {
-        background-color: #ff5252;
-    }
-    
-    .back-link {
-        position: absolute;
-        right: 48px;
-        top: 48px;
-        background-color: #CFEFFF;
-        color: #323232;
-        padding: 12px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 16px;
-        font-weight: 500;
-    }
-    
-    .back-link:hover {
-        background-color: #b8e5ff;
-    }
-</style>
+    <link rel="stylesheet" href="./css/mpl-form.css">
 </head>
 
 <body>
@@ -319,16 +205,13 @@ if ($id) {
                             </tr>
 
                             <!-- inventory units -->
+                            <!-- users select each unit individually -->
                             <?php foreach ($available_units as $unit): ?>
                             <tr>
                                 <td class="checkbox-cell">
-                                    <input 
-                                        type="checkbox" 
-                                        name="unit_ids[]" 
-                                        value="<?= htmlspecialchars($unit['unit_number']) ?>"
-                                        class="unit-checkbox"
-                                        <?= in_array($unit['unit_number'], $selected_unit_ids) ? 'checked' : '' ?>
-                                    >
+                                    <input type="checkbox" name="unit_ids[]" 
+                                        value="<?= htmlspecialchars($unit['unit_number']) ?>" class="unit-checkbox"
+                                        <?= in_array($unit['unit_number'], $selected_unit_ids) ? 'checked' : '' ?>>
                                 </td>
                                 <td><?= htmlspecialchars($unit['unit_number']) ?></td>
                                 <td><?= htmlspecialchars($unit['sku']) ?></td>

@@ -1,3 +1,5 @@
+<!-- Do not use this one -->
+
 <?php
 require 'db_connect.php';
 require './lib/auth.php';
