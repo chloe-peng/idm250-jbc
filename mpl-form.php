@@ -23,17 +23,21 @@ if ($result) {
     $error = $id ? 'Failed to update MPL.' : 'Failed to create MPL.';
 }
 
-        // if (isset($data['success']) && $data['success']) {
-        //     $data['success'] = $id 
-        //     ? 'MPL updated successfully.' 
-        //     : 'MPL created successfully.';
-        //     header('Location: mpl-records.php');
-        //     exit;
-        // } 
-
 // handles form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = $_POST;
+    $data = [
+        'reference_num' => $_POST['reference_number'],
+        'trailer_number' => $_POST['trailer_number'],
+        'expected_arrival' => $_POST['expected_arrival']
+    ];
+    
+    $unit_ids = isset($_POST['unit_ids']) ? $_POST['unit_ids'] : [];
+    
+    if ($id) {
+        $result = update_mpl($id, $data, $unit_ids);
+    } else {
+        $result = create_mpl($data, $unit_ids);
+    }
     
     if (empty($data['reference_number']) || empty($data['unit_ids'])) {
         $error = "Reference number and at least one unit are required.";
@@ -128,7 +132,7 @@ if ($id) {
         <div class="main-content" style="position: relative;">
             <a href="mpl-records.php" class="back-link">Back to List</a>
             
-            <h1 class="color-text-primary" style="margin-bottom: 30px;">MPL</h1>
+            <h1 class="color-text-primary" style="margin-bottom: 30px;">Create MPL</h1>
 
             <?php if (isset($error)): ?>
                 <div style="background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
@@ -143,13 +147,13 @@ if ($id) {
 
                 <div class="mpl-form-header">
                     <div class="form-field">
-                        <label for="reference_number">Reference Number</label>
+                        <label for="reference_num">Reference Number</label>
                         <input 
                             type="text" 
                             id="reference_number" 
                             name="reference_number" 
                             placeholder="Fill reference number"
-                            value="<?= htmlspecialchars($mpl['reference_number'] ?? '') ?>"
+                            value="<?= htmlspecialchars($mpl['reference_num'] ?? '') ?>"
                             required
                         >
                     </div>

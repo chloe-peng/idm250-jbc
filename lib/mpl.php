@@ -55,7 +55,7 @@ function get_mpl_items($mpl_id) {
 function get_mpl_item_count($mpl_id) {
     global $connection;
     
-    $stmt = $connection->prepare("SELECT COUNT(*) as count FROM mpl_items WHERE id = ?");
+    $stmt = $connection->prepare("SELECT COUNT(*) as count FROM mpl_items WHERE mpl_id = ?");
     $stmt->bind_param('i', $mpl_id);
     $stmt->execute();
     $result = $stmt->get_result();

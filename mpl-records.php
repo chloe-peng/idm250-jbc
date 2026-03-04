@@ -139,16 +139,16 @@ if (isset($_GET['send']) && isset($_GET['id'])) {
                             <td>
                                 <?php if ($status === 'draft'): ?>
                                     <a href="mpl-form.php?id=<?= $mpl_id ?>">Edit</a>
-                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
                                     <a href="delete-mpl.php?id=<?= $mpl_id ?>" onclick="return confirm('Are you sure you want to delete this MPL?');">Delete</a>
                                     <a href="mpl-records.php?id=<?= $mpl_id ?>&send=1" class="btn-send">Send to WMS</a>
 
                                 <?php elseif ($status === 'sent'): ?>
-                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
                                     <a href="mpl-confirm.php?id=<?= $mpl_id ?>&action=confirm">Confirm</a>
                                 <?php else: 
                                     // confirmed ?>
-                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
                                 <?php endif; ?>
                             </td>
                         </tr>
