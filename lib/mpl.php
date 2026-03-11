@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors',1);
 
 // get all MPLS
 function get_all_mpls() {
@@ -36,7 +38,7 @@ function get_mpl_items($mpl_id) {
     $stmt = $connection->prepare(
         "SELECT mi.*, i.ficha, s.*
         FROM mpl_items mi
-        JOIN inventory i ON mi.unit_id = i.unit_number
+        JOIN inventory i ON mi.unit_number = i.unit_number
         LEFT JOIN cms_products s ON i.ficha = s.ficha
         WHERE mi.mpl_id = ?"
     );
@@ -83,11 +85,11 @@ function create_mpl($data, $unit_ids) {
          VALUES (?, ?, ?, 'draft')"
     );
     
-    $stmt->bind_param('sss', 
-        $data['reference_number'], 
-        $data['trailer_number'], 
-        $data['expected_arrival']
-    );
+$stmt->bind_param('sss', 
+    $data['reference_number'], 
+    $data['trailer_number'], 
+    $data['expected_arrival']
+);
     
     if (!$stmt->execute()) {
         return false;
@@ -96,10 +98,9 @@ function create_mpl($data, $unit_ids) {
     $mpl_id = $connection->insert_id;
     
     if (!empty($unit_ids)) {
-        $stmt = $connection->prepare("INSERT INTO mpl_items (mpl_id, unit_id) VALUES (?, ?)");
-        
+        $stmt = $connection->prepare("INSERT INTO mpl_items (mpl_id, unit_number) VALUES (?, ?)");        
         foreach ($unit_ids as $unit_id) {
-            $stmt->bind_param('ii', $mpl_id, $unit_id);
+            $stmt->bind_param('is', $mpl_id, $unit_id); // ← was 'ii', unit_id is a string
             $stmt->execute();
         }
     }
@@ -127,7 +128,7 @@ function update_mpl($id, $data, $unit_ids) {
     );
     
     $stmt->bind_param('sssi', 
-        $data['reference_num'], 
+        $data['reference_number'], 
         $data['trailer_number'], 
         $data['expected_arrival'],
         $id
@@ -137,15 +138,17 @@ function update_mpl($id, $data, $unit_ids) {
         return false;
     }
     
-    $stmt = $connection->prepare("DELETE FROM mpl_items WHERE id = ?");
+    // fixed: was "WHERE id = ?" which targets the wrong column
+    $stmt = $connection->prepare("DELETE FROM mpl_items WHERE mpl_id = ?");
     $stmt->bind_param('i', $id);
     $stmt->execute();
     
     if (!empty($unit_ids)) {
-        $stmt = $connection->prepare("INSERT INTO mpl_items (mpl_id, unit_id) VALUES (?, ?)");
+        $stmt = $connection->prepare("INSERT INTO mpl_items (mpl_id, unit_number) VALUES (?, ?)");
         
         foreach ($unit_ids as $unit_id) {
-            $stmt->bind_param('ii', $mpl_id, $unit_id);
+            // fixed: was $mpl_id (undefined), and 'ii' (unit_id is a string)
+            $stmt->bind_param('is', $id, $unit_id);
             $stmt->execute();
         }
     }
@@ -180,7 +183,6 @@ function delete_mpl($id) {
 function update_mpl_status($mpl_id, $status) {
     global $connection;
     
-    // validates status
     $allowed_statuses = ['draft', 'sent', 'confirmed'];
     if (!in_array($status, $allowed_statuses)) {
         return false;
@@ -227,7 +229,7 @@ function send_mpl_to_wms($mpl_id) {
     $formatted_items = [];
     foreach ($raw_items as $item) {
         $formatted_items[] = [
-            'unit_id' => $item['unit_id'],
+            'unit_number' => $item['unit_number'],
             'sku' => $item['sku'],
             'sku_details' => [
                 'sku' => $item['sku'],
@@ -256,12 +258,13 @@ function send_mpl_to_wms($mpl_id) {
     if (!empty($response['success'])) {
         update_mpl_status($mpl_id, 'sent');
         return [
-            'success' => true,
+            'success'     => true,
             'units_count' => $response['units_count'] ?? count($formatted_items)
         ];
     } else {
-        return [ 'success' => false,
-        'error' => $response['error'] ?? 'Unknown error'
+        return [
+            'success' => false,                                    // <-- was missing
+            'error'   => $response['error'] ?? 'Unknown error'
         ];
     }
     
@@ -271,7 +274,7 @@ function send_mpl_to_wms($mpl_id) {
 function update_units_location($mpl_id, $new_location) {
     global $connection;
 
-   $stmt = $connection->prepare("
+    $stmt = $connection->prepare("
         UPDATE inventory i
         JOIN mpl_items mi ON mi.unit_id = i.unit_number
         SET i.location = ?
@@ -279,9 +282,39 @@ function update_units_location($mpl_id, $new_location) {
     ");
 
     $stmt->bind_param("si", $new_location, $mpl_id);
-    
     $stmt->execute();
-    return $stmt->affected_rows;
+
+    return $stmt->affected_rows > 0;
+}
+
+
+function handle_confirm($reference_number): void {
+    global $connection;
+    $mpl = get_mpl($reference_number);
+
+    if (!$mpl) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'error' => "MPL not found: $reference_number"]);
+        exit;
+    }
+    if ($mpl['status'] === 'confirmed') {
+        echo json_encode(['success' => true, 'message' => 'Already confirmed']);
+        exit;
+    }
+
+    $mpl_id = $mpl['id'];
+
+    $updated_status = update_mpl_status($mpl_id, 'confirmed');
+    $updated = update_units_location($mpl_id, 'warehouse');
+
+    if($updated_status) {
+        echo json_encode([
+            'success'       => true,
+            'message'       => "MPL $reference_number confirmed",
+            'units_updated' => $updated,
+        ]);
+        exit;
+    }
 }
 
 ?>

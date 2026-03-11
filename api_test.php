@@ -1,11 +1,17 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors',1);
+
 require 'db_connect.php';
 require './lib/auth.php';
 require './lib/mpl.php';
 
-$id = 6;
-$mpl_items = get_mpl_items($id);
-print_r($mpl_items);
+
+$id = 8;
+
+$items = get_mpl_items($id);
+$response = send_mpl_to_wms($id);
+print_r($reponse);
 
 ?>
 
