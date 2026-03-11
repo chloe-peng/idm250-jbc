@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 require 'db_connect.php';
 require './lib/auth.php';
 require './lib/mpl.php';
@@ -15,51 +17,31 @@ if ($id && $mpl && $mpl['status'] !== 'draft') {
     exit;
 } 
 
-if ($result) {
-    $_SESSION['success'] = $id ? 'MPL updated successfully.' : 'MPL created successfully.';
-    header('Location: mpl-records.php');
-    exit;
-} else {
-    $error = $id ? 'Failed to update MPL.' : 'Failed to create MPL.';
-}
-
 // handles form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
-        'reference_num' => $_POST['reference_number'],
-        'trailer_number' => $_POST['trailer_number'],
+        'reference_number' => $_POST['reference_number'],
+        'trailer_number'   => $_POST['trailer_number'],
         'expected_arrival' => $_POST['expected_arrival']
     ];
     
     $unit_ids = isset($_POST['unit_ids']) ? $_POST['unit_ids'] : [];
     
-    if ($id) {
-        $result = update_mpl($id, $data, $unit_ids);
-    } else {
-        $result = create_mpl($data, $unit_ids);
-    }
-    
-    if (empty($data['reference_number']) || empty($data['unit_ids'])) {
+    if (empty($data['reference_number']) || empty($unit_ids)) {
         $error = "Reference number and at least one unit are required.";
     } else {
         if ($id) {
-            $result = update_mpl($id, $data, $data['unit_ids']);
-        }
-        else { 
-            $encoded_payload = json_encode($data);
-            $api_url = 'http://localhost:8888/api/mpl.php';
-            global $env;
-            $api_key = $env['X-API-KEY'];
-
-            $result = api_request($api_url, 'POST', $data, $api_key);
+            $result = update_mpl($id, $data, $unit_ids);
+        } else {
+            $result = create_mpl($data, $unit_ids);
         }
         
-        if (!empty($result['success'])) {
+        if ($result) {
             $_SESSION['success'] = $id ? 'MPL updated successfully.' : 'MPL created successfully.';
             header('Location: mpl-records.php');
             exit;
         } else {
-            $error = $result['error'] ?? 'Error unable to create the MPL';
+            $error = 'Error unable to create the MPL.';
         }
     }
 }
@@ -78,7 +60,7 @@ $selected_unit_ids = [];
 if ($id) {
     $selected_items = get_mpl_items($id);
     foreach ($selected_items as $item) {
-        $selected_unit_ids[] = $item['unit_id'];
+        $selected_unit_ids[] = $item['unit_number'];
     }
 }
 ?>
@@ -132,7 +114,9 @@ if ($id) {
         <div class="main-content" style="position: relative;">
             <a href="mpl-records.php" class="back-link">Back to List</a>
             
-            <h1 class="color-text-primary" style="margin-bottom: 30px;">Create MPL</h1>
+            <h1 class="color-text-primary" style="margin-bottom: 30px;">
+                <?php echo $id ? 'Edit MPL' : 'Create MPL'; ?>
+            </h1>
 
             <?php if (isset($error)): ?>
                 <div style="background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
@@ -147,7 +131,7 @@ if ($id) {
 
                 <div class="mpl-form-header">
                     <div class="form-field">
-                        <label for="reference_num">Reference Number</label>
+                        <label for="reference_number">Reference Number</label>
                         <input 
                             type="text" 
                             id="reference_number" 
@@ -205,7 +189,6 @@ if ($id) {
                             </tr>
 
                             <!-- inventory units -->
-                            <!-- users select each unit individually -->
                             <?php foreach ($available_units as $unit): ?>
                             <tr>
                                 <td class="checkbox-cell">
@@ -241,7 +224,6 @@ if ($id) {
     </div>
 
     <script>
-        // toggle all checkboxes
         function toggleAll(source) {
             const checkboxes = document.querySelectorAll('.unit-checkbox');
             checkboxes.forEach(checkbox => {
@@ -249,7 +231,6 @@ if ($id) {
             });
         }
 
-        // update "Select All" checkbox based on individual checkboxes
         document.addEventListener('DOMContentLoaded', function() {
             const selectAll = document.getElementById('select-all');
             const unitCheckboxes = document.querySelectorAll('.unit-checkbox');

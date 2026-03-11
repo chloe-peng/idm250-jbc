@@ -173,7 +173,7 @@ $item_count = count($items);
                         <?php else: ?>
                         <?php foreach ($items as $item): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($item['unit_id']); ?></td>
+                            <td><?php echo htmlspecialchars($item['unit_number']); ?></td>
                             <td><?php echo htmlspecialchars($item['sku'] ?? '—'); ?></td>
                             <td><?php echo htmlspecialchars($item['description'] ?? '—'); ?></td>
                             <td><?php echo htmlspecialchars(date('m-d-y', strtotime($item['ship_date'] ?? ''))); ?></td>

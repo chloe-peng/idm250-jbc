@@ -33,6 +33,7 @@ function get_inventory($location = null) {
     }
 }
 
+<<<<<<< Updated upstream
 // function get_unit($unit_id) {
 //     global $connection;
 
@@ -49,3 +50,15 @@ function get_inventory($location = null) {
 // }
 
 ?>
+=======
+function update_inventory_location($unit_id, $location) {
+    global $connection;
+
+    $stmt = $connection->prepare("UPDATE inventory SET location = ? WHERE unit_number = ?");
+    $stmt->bind_param("ss",$location, $unit_id);
+    $stmt->execute();
+    
+}
+
+?>
+>>>>>>> Stashed changes

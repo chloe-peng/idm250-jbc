@@ -1,8 +1,14 @@
 <?php
-require 'db_connect.php';
-require './lib/inventory.php';
-require './lib/auth.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+<<<<<<< Updated upstream
+=======
+require 'db_connect.php';
+require './lib/auth.php';
+require './lib/inventory.php';
+
+>>>>>>> Stashed changes
 $warehouse_inventory = get_inventory('warehouse'); 
 // $warehouse_units = $warehouse_inventory->num_rows;
 ?>

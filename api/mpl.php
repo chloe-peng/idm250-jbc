@@ -19,7 +19,6 @@ require_once '../lib/mpl.php';
 
 ob_end_clean();
 
-$env = require dirname(dirname(__DIR__)) . '/.env.php';
 check_api_key($env);
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -51,7 +50,6 @@ if ($method === 'POST') {
 		}
 	}
 	$mpl_id = create_mpl($data, $unit_ids);
-    $unit_info = get_mpl_items($mpl_id);
 
 	if($mpl_id) {
 		http_response_code(200);

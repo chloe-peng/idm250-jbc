@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors',1);
+
 require 'db_connect.php';
 require './lib/auth.php';
 require './lib/mpl.php';
@@ -10,22 +13,13 @@ $mpls = get_all_mpls();
 $mpl_count = get_mpl_count();
 
 if (isset($_GET['send']) && isset($_GET['id'])) {
-    $mpl_id = (int)$_GET['id'];
-    // $units = get_mpl_items($mpl_id);
-
+    $mpl_id   = (int)$_GET['id'];
     $response = send_mpl_to_wms($mpl_id);
 
-    if (!empty($response['success'])) {
-        $_SESSION['success'] = "MPL $mpl_id sent to WMS successfully!";
-
-        $updated = update_units_location($mpl_id, 'warehouse');
-            if ($updated > 0) {
-                echo 'Units have successfully been updated';
-                header("Location: mpl-records.php");
-                exit();
-            }
+    if ($response['success'] === true) {
+        $_SESSION['success'] = "MPL $mpl_id successfully sent.";
     } else {
-        $_SESSION['error'] = "Failed to send MPL $mpl_id: " . ($response['error'] ?? 'Unknown error');
+        $_SESSION['error'] = "Error: Unable to send MPL to warehouse";
     }
 
     header('Location: mpl-records.php');
