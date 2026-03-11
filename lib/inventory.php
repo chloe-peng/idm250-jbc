@@ -22,7 +22,6 @@ function get_inventory($location = null) {
         ];
     } else {
         $stmt = $connection->prepare($sql);
-        $stmt->execute();
         $result = $stmt->get_result();
         $inventory = $result->fetch_all(MYSQLI_ASSOC);
 
@@ -32,3 +31,5 @@ function get_inventory($location = null) {
         ];
     }
 }
+
+?>

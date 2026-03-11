@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Inventory Template</title>
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/sku.css">
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/mpl.css">
+</head>
+
+<body>
+    <!-- header -->
+    <div class="header-bar">
+        <h2>JBC Manufacturing CMS</h2>
+
+        <div class="header-bar-right">
+            <h5>yourname@gmail.com</h5>
+            <h5>Logout</h5>
+        </div>
+    </div>
+
+    <!-- page wrapper: sidebar + main content -->
+    <div class="page-wrapper">
+        <!-- sidebar -->
+        <div class="sidebar-nav">
+            <ul class="nav-list">
+                <!-- <li class="nav-item"><h5>Dashboard</h5></li> -->
+                <li li class="nav-item"><h5>SKU Management</h5></li>
+                <li class="nav-item"><h5>Internal Inventory</h5></li>
+                <li class="nav-item"><h5>Warehouse Inventory</h5></li>
+                <li class="nav-item nav-item--active"><h5>MPL Records</h5></li>
+                <li class="nav-item"><h5>Order Records</h5></li>
+            </ul>
+        </div>
+
+    <!-- main content -->
+    <div class="main-content">
+        <h1 class="color-text-primary">MPL Records</h1>
+
+        <div class="sku-action-card">
+            <h3 class="color-text-primary">Total # of MPLs: 12</h3>
+            <div class="add-sku-button">
+                <h5>Create MPL</h5>
+                <img class="icon" src="./images/plus-icon.png" alt="plus icon">
+            </div>
+        </div>
+
+        <div class="sku-table-container">
+            <table class="sku-table">
+                <thead>
+                    <tr>
+                        <th>Reference #</th>
+                        <th>Trailer #</th>
+                        <th>Expected Arrival</th>
+                        <th>Status</th>
+                        <th>Items</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Draft MPL -->
+                    <tr>
+                        <td>MPL-2025-001</td>
+                        <td>TR-5589</td>
+                        <td>02-20-26</td>
+                        <td><span class="status-badge status-draft">Draft</span></td>
+                        <td>15 units</td>
+                        <td>
+                            <a href="mpl-form.php?id=1">Edit</a>
+                            <a href="mpl-details.php?id=1">View</a>
+                            <a href="delete-mpl.php?id=1">Delete</a>
+                        </td>
+                    </tr>
+
+                    <!-- Sent MPL -->
+                    <tr>
+                        <td>MPL-2025-002</td>
+                        <td>TR-5590</td>
+                        <td>02-21-26</td>
+                        <td><span class="status-badge status-sent">Sent</span></td>
+                        <td>22 units</td>
+                        <td>
+                            <a href="mpl-details.php?id=2">View</a>
+                            <a href="mpl-confirm.php?id=2">Confirm</a>
+                        </td>
+                    </tr>
+
+                    <!-- Confirmed MPL -->
+                    <tr>
+                        <td>MPL-2025-003</td>
+                        <td>TR-5591</td>
+                        <td>02-18-26</td>
+                        <td><span class="status-badge status-confirmed">Confirmed</span></td>
+                        <td>18 units</td>
+                        <td>
+                            <a href="mpl-details.php?id=3">View</a>
+                        </td>
+                    </tr>
+
+                    <!-- More sample rows -->
+                    <tr>
+                        <td>MPL-2025-004</td>
+                        <td>TR-5592</td>
+                        <td>02-22-26</td>
+                        <td><span class="status-badge status-draft">Draft</span></td>
+                        <td>8 units</td>
+                        <td>
+                            <a href="mpl-form.php?id=4">Edit</a>
+                            <a href="mpl-details.php?id=4">View</a>
+                            <a href="delete-mpl.php?id=4">Delete</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>MPL-2025-005</td>
+                        <td>TR-5593</td>
+                        <td>02-19-26</td>
+                        <td><span class="status-badge status-confirmed">Confirmed</span></td>
+                        <td>25 units</td>
+                        <td>
+                            <a href="mpl-details.php?id=5">View</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>MPL-2025-006</td>
+                        <td>TR-5594</td>
+                        <td>02-23-26</td>
+                        <td><span class="status-badge status-sent">Sent</span></td>
+                        <td>12 units</td>
+                        <td>
+                            <a href="mpl-details.php?id=6">View</a>
+                            <a href="mpl-confirm.php?id=6">Confirm</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -30,19 +30,7 @@ if ($method === 'POST') {
     $action       = $data['action']       ?? '';
     $order_number = $data['order_number'] ?? '';
     $shipped_at   = $data['shipped_at']   ?? '';
-
-    $data_keys = ['action', 'order_number', 'shipped_at'];
-    foreach ($data_keys as $key) {
-        if (empty($data[$key])) {
-            http_response_code(400);
-            echo json_encode([
-                'error'   => 'Bad Request',
-                'details' => "Missing required field: $key"
-            ]);
-            exit;
-        }
-    }
-
+ 
     if ($action !== 'ship') {
         http_response_code(400);
         echo json_encode([

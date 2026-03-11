@@ -6,7 +6,7 @@ require 'db_connect.php';
 require './lib/auth.php';
 require './lib/inventory.php';
 
-$warehouse_inventory = get_inventory('warehouse'); 
+$warehouse_inventory = get_inventory('internal'); 
 // $warehouse_units = $warehouse_inventory->num_rows;
 ?>
 
@@ -93,7 +93,7 @@ $warehouse_inventory = get_inventory('warehouse');
                 </tbody>
             </table>
         </div>
-        </div>
-        </div>
-        </body>
-        </html>
+    </div>
+</div>
+</body>
+</html>

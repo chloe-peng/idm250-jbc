@@ -56,21 +56,11 @@ if (isset($_GET['send']) && isset($_GET['id'])) {
         <!-- sidebar -->
         <div class="sidebar-nav">
             <ul class="nav-list">
-                <li class="nav-item">
-                    <a style="text-decoration: none; color: inherit;" href="sku-management.php"><h5>SKU Management</h5></a>
-                </li>
-                <li class="nav-item">
-                    <a style="text-decoration: none; color: inherit;" href="internal-inventory.php"><h5>Internal Inventory</h5></a>
-                </li>
-                <li class="nav-item">
-                    <a style="text-decoration: none; color: inherit;" href="warehouse-inventory.php"><h5>Warehouse Inventory</h5></a>
-                </li>
-                <li class="nav-item nav-item--active">
-                    <a style="text-decoration: none; color: inherit;" href="mpl-records.php"><h5>MPL Records</h5></a>
-                </li>
-                <li class="nav-item">
-                    <a style="text-decoration: none; color: inherit;" href="order-records.php"><h5>Order Records</h5></a>
-                </li>
+                <li class="nav-item"><h5>SKU Management</h5></li>
+                <li class="nav-item"><h5>Internal Inventory</h5></li>
+                <li class="nav-item"><h5>Warehouse Inventory</h5></li>
+                <li class="nav-item nav-item--active"><h5>MPL Records</h5></li>
+                <li class="nav-item"><h5>Order Records</h5></li>
             </ul>
         </div>
 
@@ -114,7 +104,7 @@ if (isset($_GET['send']) && isset($_GET['id'])) {
                         if ($mpls && count($mpls) > 0) {
                             foreach ($mpls as $mpl) {
                                 $mpl_id = $mpl['id'];
-                                $reference = $mpl['reference_num'];
+                                $reference = $mpl['reference_number'];
                                 $trailer = $mpl['trailer_number'];
                                 $arrival = date('m-d-y', strtotime($mpl['expected_arrival']));
                                 $status = $mpl['status'];
@@ -133,16 +123,16 @@ if (isset($_GET['send']) && isset($_GET['id'])) {
                             <td>
                                 <?php if ($status === 'draft'): ?>
                                     <a href="mpl-form.php?id=<?= $mpl_id ?>">Edit</a>
-                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
                                     <a href="delete-mpl.php?id=<?= $mpl_id ?>" onclick="return confirm('Are you sure you want to delete this MPL?');">Delete</a>
                                     <a href="mpl-records.php?id=<?= $mpl_id ?>&send=1" class="btn-send">Send to WMS</a>
 
                                 <?php elseif ($status === 'sent'): ?>
-                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
                                     <a href="mpl-confirm.php?id=<?= $mpl_id ?>&action=confirm">Confirm</a>
                                 <?php else: 
                                     // confirmed ?>
-                                    <a href="mpl-view.php?id=<?= $mpl_id ?>">View</a>
+                                    <a href="mpl-details.php?id=<?= $mpl_id ?>">View</a>
                                 <?php endif; ?>
                             </td>
                         </tr>
