@@ -252,7 +252,7 @@ function send_mpl_to_wms($mpl_id) {
     ];
 
     $wms_api_url = 'https://digmstudents.westphal.drexel.edu/~ks4264/idm250-cms-project/api/mpls.php';
-    $api_key = $env['X-API-KEY'];
+    $api_key = $env['WMS-X-API-KEY'];
     $response = api_request($wms_api_url, 'POST', $payload, $api_key);
 
     if (!empty($response['success'])) {
@@ -263,12 +263,10 @@ function send_mpl_to_wms($mpl_id) {
         ];
     } else {
         return [
-            'success' => false,                                    // <-- was missing
+            'success' => false,
             'error'   => $response['error'] ?? 'Unknown error'
         ];
     }
-    
-    return $response;
 }
 
 function update_units_location($mpl_id, $new_location) {

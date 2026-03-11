@@ -7,11 +7,12 @@ require './lib/auth.php';
 require './lib/mpl.php';
 
 
-$id = 8;
+$id = 17;
 
 $items = get_mpl_items($id);
+print_r($items);
 $response = send_mpl_to_wms($id);
-print_r($reponse);
+print_r($response);
 
 ?>
 
