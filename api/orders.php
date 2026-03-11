@@ -30,19 +30,7 @@ if ($method === 'POST') {
     $action       = $data['action']       ?? '';
     $order_number = $data['order_number'] ?? '';
     $shipped_at   = $data['shipped_at']   ?? '';
- 
-    if ($action !== 'ship') {
-        http_response_code(400);
-        echo json_encode([
-            'error'   => 'Bad Request',
-            'details' => "Unknown action: $action"
-        ]);
         exit;
-    }
-
-    // Validate shipped_at is a real date
-    // if (!strtotime($shipped_at)) {
-    //     http_response_code(400);
     //     echo json_encode([
     //         'error'   => 'Bad Request',
     //         'details' => "Invalid shipped_at date: $shipped_at"

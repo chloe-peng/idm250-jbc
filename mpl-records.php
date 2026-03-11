@@ -104,7 +104,7 @@ if (isset($_GET['send']) && isset($_GET['id'])) {
                         if ($mpls && count($mpls) > 0) {
                             foreach ($mpls as $mpl) {
                                 $mpl_id = $mpl['id'];
-                                $reference = $mpl['reference_number'];
+                                $reference = $mpl['reference_num'];
                                 $trailer = $mpl['trailer_number'];
                                 $arrival = date('m-d-y', strtotime($mpl['expected_arrival']));
                                 $status = $mpl['status'];
