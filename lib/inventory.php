@@ -35,6 +35,7 @@ function get_inventory($location = null) {
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // function get_unit($unit_id) {
 //     global $connection;
 
@@ -50,6 +51,8 @@ function get_inventory($location = null) {
 //     }
 // }
 =======
+=======
+>>>>>>> Stashed changes
 function update_inventory_location($unit_id, $location) {
     global $connection;
 
@@ -58,6 +61,9 @@ function update_inventory_location($unit_id, $location) {
     $stmt->execute();
     
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 ?>

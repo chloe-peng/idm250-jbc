@@ -25,12 +25,15 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 if($method === 'POST') {
 
     
 }
 
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 if ($method === 'POST') {
@@ -129,6 +132,9 @@ if ($method === 'POST') {
         echo json_encode(['error' => 'Method not allowed']);
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
