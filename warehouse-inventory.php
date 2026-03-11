@@ -3,11 +3,17 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 require 'db_connect.php';
 require './lib/auth.php';
 require './lib/inventory.php';
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 $warehouse_inventory = get_inventory('warehouse'); 
 // $warehouse_units = $warehouse_inventory->num_rows;

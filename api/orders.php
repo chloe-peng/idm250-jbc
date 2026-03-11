@@ -24,12 +24,15 @@ check_api_key($env);
 $method = $_SERVER['REQUEST_METHOD'];
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 if($method === 'POST') {
 
     
 }
 
 =======
+=======
+>>>>>>> Stashed changes
 if ($method === 'POST') {
     $raw_input = file_get_contents('php://input');
     $data = json_decode($raw_input, true);
@@ -125,6 +128,9 @@ if ($method === 'POST') {
         http_response_code(405);
         echo json_encode(['error' => 'Method not allowed']);
     }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 ?>
